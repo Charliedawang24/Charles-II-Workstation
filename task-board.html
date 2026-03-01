@@ -6,384 +6,303 @@
     <title>🏍️ 查理二世 - AI 工作站</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            min-height: 100vh;
-            padding: 15px;
-            color: #fff;
-        }
-        
-        /* 导航 */
-        .nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .nav-btn {
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 20px;
-            color: #fff;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        .nav-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        /* 页面 */
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); min-height: 100vh; padding: 15px; color: #fff; }
+        .nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-btn { padding: 10px 20px; background: rgba(255,255,255,0.1); border: none; border-radius: 20px; color: #fff; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .nav-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+        .nav-btn:hover { background: rgba(255,255,255,0.2); }
         .page { display: none; }
         .page.active { display: block; }
-        
-        .header {
-            text-align: center;
-            padding: 20px 0;
-        }
+        .header { text-align: center; padding: 20px 0; }
         .header h1 { font-size: 1.8em; margin-bottom: 5px; }
         .header p { color: #888; font-size: 0.9em; }
-        .logo { font-size: 2.5em; margin-bottom: 10px; }
-        
-        /* 状态栏 */
-        .status-bar {
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85em;
-        }
+        .status-bar { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85em; flex-wrap: wrap; gap: 10px; }
         .status-item { display: flex; align-items: center; gap: 5px; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; }
         .status-dot.green { background: #4caf50; }
-        .status-dot.yellow { background: #ffc107; }
-        
-        /* 统计卡片 */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .stat-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px 10px;
-            text-align: center;
-        }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+        .stat-card { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 15px 10px; text-align: center; }
         .stat-number { font-size: 2em; font-weight: bold; }
         .stat-label { color: #aaa; font-size: 0.8em; margin-top: 5px; }
-        
-        /* 看板 */
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .column {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 12px;
-        }
-        .column-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid;
-        }
+        .task-input-section { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .task-input-title { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+        .task-input { width: 100%; padding: 12px 15px; border: none; border-radius: 8px; background: rgba(255,255,255,0.15); color: #fff; font-size: 14px; margin-bottom: 10px; }
+        .task-input::placeholder { color: #aaa; }
+        .task-textarea { width: 100%; padding: 12px 15px; border: none; border-radius: 8px; background: rgba(255,255,255,0.15); color: #fff; font-size: 14px; min-height: 80px; resize: vertical; margin-bottom: 10px; }
+        .task-textarea::placeholder { color: #aaa; }
+        .task-submit { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 12px 30px; border-radius: 20px; color: #fff; cursor: pointer; font-size: 14px; }
+        .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .column { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; }
+        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid; }
         .column.pending { border-color: #ffc107; }
         .column.progress { border-color: #2196f3; }
         .column.done { border-color: #4caf50; }
         .column-title { font-size: 1em; font-weight: bold; }
-        
-        .task {
-            background: rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-left: 3px solid;
-        }
+        .task { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 3px solid; }
         .task.pending { border-color: #ffc107; }
         .task.progress { border-color: #2196f3; }
         .task.done { border-color: #4caf50; }
         .task-title { font-weight: 600; font-size: 0.9em; margin-bottom: 5px; }
         .task-meta { font-size: 0.75em; color: #888; display: flex; justify-content: space-between; }
-        
-        .empty-state {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 0.85em;
-        }
-        
-        /* 项目管理 */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .project-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px;
-        }
-        .project-name { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; }
+        .empty-state { text-align: center; padding: 20px; color: #666; font-size: 0.85em; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
+        .project-card { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; }
+        .project-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .project-name { font-size: 1.1em; font-weight: bold; }
+        .project-status { padding: 3px 10px; border-radius: 10px; font-size: 0.7em; }
+        .project-status.active { background: rgba(76, 175, 80, 0.3); color: #4caf50; }
+        .project-status.planning { background: rgba(255, 193, 7, 0.3); color: #ffc107; }
+        .project-status.completed { background: rgba(33, 150, 243, 0.3); color: #2196f3; }
         .project-info { font-size: 0.85em; color: #aaa; margin-bottom: 8px; }
-        .project-progress {
-            height: 6px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .project-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s;
-        }
-        
-        /* 工作流 */
-        .workflow-item {
-            background: rgba(255,255,255,0.08);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .workflow-step {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8em;
-        }
+        .project-desc { font-size: 0.8em; color: #888; margin-bottom: 12px; }
+        .project-progress { height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; }
+        .project-progress-bar { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); }
+        .project-tasks { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .project-task { font-size: 0.8em; color: #aaa; margin-bottom: 4px; }
+        .workflow-section { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .workflow-title { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+        .workflow-timeline { position: relative; padding-left: 30px; }
+        .workflow-timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.2); }
+        .workflow-item { position: relative; margin-bottom: 20px; }
+        .workflow-step { position: absolute; left: -30px; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.7em; }
         .workflow-step.active { background: #667eea; }
         .workflow-step.done { background: #4caf50; }
-        .workflow-info { flex: 1; }
-        .workflow-name { font-weight: 600; }
+        .workflow-info { padding-left: 10px; }
+        .workflow-name { font-weight: 600; margin-bottom: 3px; }
         .workflow-desc { font-size: 0.8em; color: #aaa; }
-        
-        /* AI助手 */
-        .ai-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .ai-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-        .ai-avatar {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
+        .report-section { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .report-title { font-size: 1.1em; font-weight: bold; }
+        .report-date { font-size: 0.8em; color: #aaa; }
+        .report-item { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .report-item-title { font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .report-item-content { font-size: 0.85em; color: #aaa; line-height: 1.5; }
+        .report-tag { font-size: 0.65em; padding: 2px 8px; border-radius: 8px; background: rgba(102, 126, 234, 0.3); color: #a0a0ff; }
+        .ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .ai-card { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; text-align: center; }
+        .ai-avatar { font-size: 2.5em; margin-bottom: 10px; }
         .ai-name { font-size: 1.1em; font-weight: bold; margin-bottom: 5px; }
         .ai-role { font-size: 0.8em; color: #aaa; margin-bottom: 10px; }
-        .ai-status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.75em;
-        }
+        .ai-desc { font-size: 0.75em; color: #888; margin-bottom: 10px; }
+        .ai-status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75em; }
         .ai-status.online { background: rgba(76, 175, 80, 0.3); color: #4caf50; }
-        .ai-status.offline { background: rgba(244, 67, 54, 0.3); color: #f44336; }
-        
-        .refresh-info {
-            text-align: center;
-            color: #666;
-            font-size: 0.75em;
-            margin-top: 15px;
-            padding: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .board { grid-template-columns: 1fr; }
-            .stats { grid-template-columns: repeat(2, 1fr); }
-            .nav { justify-content: center; }
-        }
+        .backup-section { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; }
+        .backup-title { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+        .backup-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.08); padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; }
+        .backup-info { flex: 1; }
+        .backup-name { font-weight: 600; margin-bottom: 3px; }
+        .backup-meta { font-size: 0.8em; color: #aaa; }
+        .backup-btn { background: rgba(102, 126, 234, 0.3); border: none; padding: 8px 15px; border-radius: 15px; color: #a0a0ff; cursor: pointer; font-size: 0.8em; }
+        .refresh-info { text-align: center; color: #666; font-size: 0.75em; margin-top: 15px; }
+        @media (max-width: 768px) { .board { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
-    <!-- 导航 -->
     <div class="nav">
         <button class="nav-btn active" onclick="showPage('dashboard')">📊 仪表盘</button>
         <button class="nav-btn" onclick="showPage('projects')">📁 项目管理</button>
         <button class="nav-btn" onclick="showPage('workflow')">🔄 工作流</button>
+        <button class="nav-btn" onclick="showPage('reports')">📰 行业报告</button>
         <button class="nav-btn" onclick="showPage('ai')">🤖 AI助手</button>
+        <button class="nav-btn" onclick="showPage('backup')">💾 数据备份</button>
     </div>
     
-    <!-- 仪表盘 -->
     <div class="page active" id="page-dashboard">
         <div class="header">
-            <div class="logo">🏍️</div>
+            <h1 style="font-size:2.5em;margin-bottom:10px;">🏍️</h1>
             <h1>查理二世 - AI 工作站</h1>
             <p>摩托车装备产品管理系统</p>
         </div>
         
         <div class="status-bar">
-            <div class="status-item">
-                <span class="status-dot green"></span>
-                <span>网关: 已连接</span>
-            </div>
-            <div class="status-item">
-                <span class="status-dot green"></span>
-                <span>飞书: 已连接</span>
-            </div>
-            <div class="status-item">
-                <span id="update-time">--:--:--</span>
-            </div>
+            <div class="status-item"><span class="status-dot green"></span><span>网关: 已连接</span></div>
+            <div class="status-item"><span class="status-dot green"></span><span>飞书: 已连接</span></div>
+            <div class="status-item"><span class="status-dot green"></span><span>AI: 在线</span></div>
+            <div class="status-item"><span id="update-time">--:--:--</span></div>
+        </div>
+        
+        <div class="task-input-section">
+            <div class="task-input-title">📝 向产品经理下达指令</div>
+            <input type="text" class="task-input" id="taskTitle" placeholder="请输入任务标题，例如：设计一款入门级头盔">
+            <textarea class="task-textarea" id="taskDesc" placeholder="请详细描述任务要求，例如：目标用户是城市通勤人群，预算范围内，竞品分析等..."></textarea>
+            <select class="task-input" id="taskAgent" style="margin-bottom:10px;">
+                <option value="">选择负责Agent（可选）</option>
+                <option value="市场调研员">🎯 市场调研员</option>
+                <option value="设计师">🎨 设计师</option>
+                <option value="技术员">🔧 技术员</option>
+                <option value="文档工程师">📝 文档工程师</option>
+                <option value="运营助手">📢 运营助手</option>
+            </select>
+            <button class="task-submit" onclick="submitTask()">🚀 提交任务</button>
         </div>
         
         <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="total">0</div>
-                <div class="stat-label">总任务</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="pending-count">0</div>
-                <div class="stat-label">待处理</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="progress-count">0</div>
-                <div class="stat-label">进行中</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="done-count">0</div>
-                <div class="stat-label">已完成</div>
-            </div>
+            <div class="stat-card"><div class="stat-number" id="total">0</div><div class="stat-label">总任务</div></div>
+            <div class="stat-card"><div class="stat-number" id="pending-count">0</div><div class="stat-label">待处理</div></div>
+            <div class="stat-card"><div class="stat-number" id="progress-count">0</div><div class="stat-label">进行中</div></div>
+            <div class="stat-card"><div class="stat-number" id="done-count">0</div><div class="stat-label">已完成</div></div>
         </div>
         
         <div class="board">
             <div class="column pending">
-                <div class="column-header">
-                    <span class="column-title">📋 待处理</span>
-                </div>
-                <div id="pending-tasks">
-                    <div class="empty-state">暂无任务</div>
-                </div>
+                <div class="column-header"><span class="column-title">📋 待处理</span></div>
+                <div id="pending-tasks"><div class="empty-state">暂无任务</div></div>
             </div>
-            
             <div class="column progress">
-                <div class="column-header">
-                    <span class="column-title">🔄 进行中</span>
-                </div>
-                <div id="progress-tasks">
-                    <div class="empty-state">暂无任务</div>
-                </div>
+                <div class="column-header"><span class="column-title">🔄 进行中</span></div>
+                <div id="progress-tasks"><div class="empty-state">暂无任务</div></div>
             </div>
-            
             <div class="column done">
-                <div class="column-header">
-                    <span class="column-title">✅ 已完成</span>
-                </div>
-                <div id="done-tasks">
-                    <div class="empty-state">暂无任务</div>
-                </div>
+                <div class="column-header"><span class="column-title">✅ 已完成</span></div>
+                <div id="done-tasks"><div class="empty-state">暂无任务</div></div>
             </div>
         </div>
     </div>
     
-    <!-- 项目管理 -->
     <div class="page" id="page-projects">
         <div class="header">
             <h1>📁 项目管理</h1>
-            <p>当前项目列表</p>
+            <p>当前项目列表及进度跟踪</p>
         </div>
         
-        <div class="project-grid" id="project-list">
+        <div class="project-grid">
             <div class="project-card">
-                <div class="project-name">🏍️ 城市通勤头盔设计</div>
-                <div class="project-info">负责人: 产品经理 | 进度: 75%</div>
-                <div class="project-progress">
-                    <div class="project-progress-bar" style="width: 75%"></div>
+                <div class="project-header">
+                    <div class="project-name">🏍️ 城市通勤头盔设计</div>
+                    <span class="project-status active">进行中</span>
+                </div>
+                <div class="project-desc">针对城市通勤人群设计的安全头盔，兼顾舒适与美观</div>
+                <div class="project-info">负责人: 产品经理 | 周期: 2026.02.15 - 2026.03.15</div>
+                <div class="project-progress"><div class="project-progress-bar" style="width: 75%"></div></div>
+                <div class="project-tasks">
+                    <div class="project-task">✓ 市场调研完成</div>
+                    <div class="project-task">✓ 竞品分析完成</div>
+                    <div class="project-task">◐ 外观设计中</div>
                 </div>
             </div>
+            
             <div class="project-card">
-                <div class="project-name">🧤 冬季骑行手套开发</div>
-                <div class="project-info">负责人: 技术员 | 进度: 30%</div>
-                <div class="project-progress">
-                    <div class="project-progress-bar" style="width: 30%"></div>
+                <div class="project-header">
+                    <div class="project-name">🧤 冬季骑行手套开发</div>
+                    <span class="project-status active">进行中</span>
+                </div>
+                <div class="project-desc">具备保暖、防滑、防水功能的冬季骑行手套</div>
+                <div class="project-info">负责人: 技术员 | 周期: 2026.02.20 - 2026.04.01</div>
+                <div class="project-progress"><div class="project-progress-bar" style="width: 30%"></div></div>
+                <div class="project-tasks">
+                    <div class="project-task">✓ 需求分析完成</div>
+                    <div class="project-task">◐ 材料选型中</div>
                 </div>
             </div>
+            
             <div class="project-card">
-                <div class="project-name">👕 春夏骑行服调研</div>
-                <div class="project-info">负责人: 市场调研员 | 进度: 100%</div>
-                <div class="project-progress">
-                    <div class="project-progress-bar" style="width: 100%"></div>
+                <div class="project-header">
+                    <div class="project-name">👕 春夏骑行服调研</div>
+                    <span class="project-status completed">已完成</span>
                 </div>
+                <div class="project-desc">调研报告：春夏骑行服市场分析</div>
+                <div class="project-info">负责人: 市场调研员 | 完成: 2026.02.28</div>
+                <div class="project-progress"><div class="project-progress-bar" style="width: 100%"></div></div>
+            </div>
+            
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-name">🎒 尾箱设计项目</div>
+                    <span class="project-status planning">规划中</span>
+                </div>
+                <div class="project-desc">摩托车尾箱设计，定位中高端市场</div>
+                <div class="project-info">负责人: 待定 | 计划: 2026.03 - 2026.05</div>
+                <div class="project-progress"><div class="project-progress-bar" style="width: 5%"></div></div>
             </div>
         </div>
     </div>
     
-    <!-- 工作流 -->
     <div class="page" id="page-workflow">
         <div class="header">
             <h1>🔄 工作流管理</h1>
-            <p>任务执行流程</p>
+            <p>任务从接收到完成的全流程</p>
         </div>
         
-        <div class="workflow-item">
-            <div class="workflow-step done">✓</div>
-            <div class="workflow-info">
-                <div class="workflow-name">接收指令</div>
-                <div class="workflow-desc">用户下达产品需求</div>
-            </div>
-        </div>
-        
-        <div class="workflow-item">
-            <div class="workflow-step done">✓</div>
-            <div class="workflow-info">
-                <div class="workflow-name">任务拆解</div>
-                <div class="workflow-desc">拆分为调研、设计、技术等子任务</div>
-            </div>
-        </div>
-        
-        <div class="workflow-item">
-            <div class="workflow-step active">3</div>
-            <div class="workflow-info">
-                <div class="workflow-name">派发任务</div>
-                <div class="workflow-desc">分配给对应AI Agent执行</div>
-            </div>
-        </div>
-        
-        <div class="workflow-item">
-            <div class="workflow-step">4</div>
-            <div class="workflow-info">
-                <div class="workflow-name">结果汇总</div>
-                <div class="workflow-desc">整合各Agent返回结果</div>
-            </div>
-        </div>
-        
-        <div class="workflow-item">
-            <div class="workflow-step">5</div>
-            <div class="workflow-info">
-                <div class="workflow-name">汇报用户</div>
-                <div class="workflow-desc">向用户呈现完整方案</div>
+        <div class="workflow-section">
+            <div class="workflow-title">📋 标准任务流程</div>
+            <div class="workflow-timeline">
+                <div class="workflow-item">
+                    <div class="workflow-step done">✓</div>
+                    <div class="workflow-info"><div class="workflow-name">1. 接收指令</div><div class="workflow-desc">用户通过工作台下达产品需求</div></div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step done">✓</div>
+                    <div class="workflow-info"><div class="workflow-name">2. 需求分析</div><div class="workflow-desc">理解需求背景、目标用户、关键指标</div></div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step done">✓</div>
+                    <div class="workflow-info"><div class="workflow-name">3. 任务拆解</div><div class="workflow-desc">拆分为调研、设计、技术等子任务</div></div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step active">4</div>
+                    <div class="workflow-info"><div class="workflow-name">4. 派发执行</div><div class="workflow-desc">分配给对应AI Agent并行执行</div></div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">5</div>
+                    <div class="workflow-info"><div class="workflow-name">5. 结果汇总</div><div class="workflow-desc">整合各Agent返回结果</div></div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">6</div>
+                    <div class="workflow-info"><div class="workflow-name">6. 汇报用户</div><div class="workflow-desc">向用户呈现完整方案</div></div>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- AI助手 -->
+    <div class="page" id="page-reports">
+        <div class="header">
+            <h1>📰 行业报告</h1>
+            <p>每日行业动态与市场分析</p>
+        </div>
+        
+        <div class="report-section">
+            <div class="report-header">
+                <div class="report-title">📅 今日报告 - 2026年3月1日</div>
+            </div>
+            
+            <div class="report-item">
+                <div class="report-item-title">🏍️ 行业动态 <span class="report-tag">行业</span></div>
+                <div class="report-item-content">
+                    • 2026年全球头盔市场规模预计达85亿美元<br>
+                    • 国内骑行装备线上销售同比增长45%<br>
+                    • 新国标GB 811-2026将于下半年实施
+                </div>
+            </div>
+            
+            <div class="report-item">
+                <div class="report-item-title">🔍 竞品动态 <span class="report-tag">竞品</span></div>
+                <div class="report-item-content">
+                    • SHOEI日本工厂扩产，高端头盔交付周期缩短<br>
+                    • 国产头盔品牌"坦克"推出999元入门级全盔<br>
+                    • 电商平台骑行装备类目搜索量上升32%
+                </div>
+            </div>
+            
+            <div class="report-item">
+                <div class="report-item-title">👥 用户趋势 <span class="report-tag">用户</span></div>
+                <div class="report-item-content">
+                    • 女性骑行者增长迅速，占比已达28%<br>
+                    • 25-35岁成主力消费群体<br>
+                    • 安全性能关注度首次超越外观设计
+                </div>
+            </div>
+            
+            <div class="report-item">
+                <div class="report-item-title">📊 技术趋势 <span class="report-tag">技术</span></div>
+                <div class="report-item-content">
+                    • MIPS防碰撞系统成为中高端头盔标配<br>
+                    • 碳纤维头盔价格下探至2000元区间<br>
+                    • 智能头盔（内置蓝牙耳机）市场份额增长
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="page" id="page-ai">
         <div class="header">
             <h1>🤖 AI助手团队</h1>
@@ -391,48 +310,51 @@
         </div>
         
         <div class="ai-grid">
-            <div class="ai-card">
-                <div class="ai-avatar">👨‍💼</div>
-                <div class="ai-name">产品经理</div>
-                <div class="ai-role">任务调度与汇报</div>
-                <span class="ai-status online">在线</span>
+            <div class="ai-card"><div class="ai-avatar">👨‍💼</div><div class="ai-name">产品经理</div><div class="ai-role">任务调度与汇报</div><div class="ai-desc">负责接收指令、拆解任务、统筹协调</div><span class="ai-status online">在线</span></div>
+            <div class="ai-card"><div class="ai-avatar">🎯</div><div class="ai-name">市场调研员</div><div class="ai-role">竞品分析、用户调研</div><div class="ai-desc">行业数据、竞品分析、用户画像</div><span class="ai-status online">在线</span></div>
+            <div class="ai-card"><div class="ai-avatar">🎨</div><div class="ai-name">设计师</div><div class="ai-role">产品设计、外观方案</div><div class="ai-desc">工业设计、外观渲染、配色方案</div><span class="ai-status online">在线</span></div>
+            <div class="ai-card"><div class="ai-avatar">📝</div><div class="ai-name">文档工程师</div><div class="ai-role">规格书、说明书</div><div class="ai-desc">产品规格书、用户手册</div><span class="ai-status online">在线</span></div>
+            <div class="ai-card"><div class="ai-avatar">🔧</div><div class="ai-name">技术员</div><div class="ai-role">材质、工艺、成本</div><div class="ai-desc">材料选型、工艺分析、成本估算</div><span class="ai-status online">在线</span></div>
+            <div class="ai-card"><div class="ai-avatar">📢</div><div class="ai-name">运营助手</div><div class="ai-role">电商文案、社群内容</div><div class="ai-desc">产品卖点、电商文案、社交内容</div><span class="ai-status online">在线</span></div>
+        </div>
+    </div>
+    
+    <div class="page" id="page-backup">
+        <div class="header">
+            <h1>💾 数据备份</h1>
+            <p>任务数据、项目资料备份管理</p>
+        </div>
+        
+        <div class="backup-section">
+            <div class="backup-title">📦 数据备份</div>
+            <div class="backup-item">
+                <div class="backup-info"><div class="backup-name">任务数据 (tasks.json)</div><div class="backup-meta">最后备份: 2026-03-01 16:45 | 大小: 2.3KB</div></div>
+                <button class="backup-btn" onclick="alert('已触发手动备份')">立即备份</button>
             </div>
-            <div class="ai-card">
-                <div class="ai-avatar">🎯</div>
-                <div class="ai-name">市场调研员</div>
-                <div class="ai-role">竞品分析、用户调研</div>
-                <span class="ai-status online">在线</span>
+            <div class="backup-item">
+                <div class="backup-info"><div class="backup-name">项目数据 (projects.json)</div><div class="backup-meta">最后备份: 2026-03-01 16:45 | 大小: 5.1KB</div></div>
+                <button class="backup-btn" onclick="alert('已触发手动备份')">立即备份</button>
             </div>
-            <div class="ai-card">
-                <div class="ai-avatar">🎨</div>
-                <div class="ai-name">设计师</div>
-                <div class="ai-role">产品设计、外观方案</div>
-                <span class="ai-status online">在线</span>
+            <div class="backup-item">
+                <div class="backup-info"><div class="backup-name">行业报告 (reports)</div><div class="backup-meta">最后备份: 2026-03-01 08:00 | 大小: 12.8KB</div></div>
+                <button class="backup-btn" onclick="alert('已触发手动备份')">立即备份</button>
             </div>
-            <div class="ai-card">
-                <div class="ai-avatar">📝</div>
-                <div class="ai-name">文档工程师</div>
-                <div class="ai-role">规格书、说明书</div>
-                <span class="ai-status online">在线</span>
+        </div>
+        
+        <div class="backup-section" style="margin-top:20px;">
+            <div class="backup-title">☁️ 备份目标</div>
+            <div class="backup-item">
+                <div class="backup-info"><div class="backup-name">GitHub 仓库</div><div class="backup-meta">Charliedawang24/Charles-II-Workstation</div></div>
+                <span class="ai-status online">已同步</span>
             </div>
-            <div class="ai-card">
-                <div class="ai-avatar">🔧</div>
-                <div class="ai-name">技术员</div>
-                <div class="ai-role">材质、工艺、成本</div>
-                <span class="ai-status online">在线</span>
-            </div>
-            <div class="ai-card">
-                <div class="ai-avatar">📢</div>
-                <div class="ai-name">运营助手</div>
-                <div class="ai-role">电商文案、社群内容</div>
-                <span class="ai-status online">在线</span>
+            <div class="backup-item">
+                <div class="backup-info"><div class="backup-name">本地存储</div><div class="backup-meta">C:\Users\YHXX\.openclaw\workspace\notes</div></div>
+                <span class="ai-status online">正常</span>
             </div>
         </div>
     </div>
     
-    <div class="refresh-info">
-        每 10 秒自动刷新 · <span id="last-update">--</span>
-    </div>
+    <div class="refresh-info">每 10 秒自动刷新 · <span id="last-update">--</span></div>
     
     <script>
         const TASKS_URL = 'https://raw.githubusercontent.com/Charliedawang24/Charles-II-Workstation/main/tasks.json';
@@ -444,23 +366,33 @@
             event.target.classList.add('active');
         }
         
+        function submitTask() {
+            const title = document.getElementById('taskTitle').value;
+            const desc = document.getElementById('taskDesc').value;
+            const agent = document.getElementById('taskAgent').value;
+            
+            if (!title) { alert('请输入任务标题！'); return; }
+            
+            alert('任务已提交！\n\n任务: ' + title + '\n描述: ' + (desc || '无') + '\n负责: ' + (agent || '产品经理分配'));
+            
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDesc').value = '';
+            document.getElementById('taskAgent').value = '';
+        }
+        
         async function loadTasks() {
             try {
                 const response = await fetch(TASKS_URL);
                 const data = await response.json();
                 render(data.tasks || []);
                 document.getElementById('last-update').textContent = '数据更新于 ' + new Date().toLocaleTimeString();
-            } catch (e) {
-                loadLocalTasks();
-            }
+            } catch (e) { loadLocalTasks(); }
         }
         
         function loadLocalTasks() {
             const tasks = [
                 { id: 1, title: "搭建产品工作站架构", agent: "产品经理", status: "done", time: "15:45" },
-                { id: 2, title: "创建任务可视化看板", agent: "产品经理", status: "done", time: "15:50" },
-                { id: 3, title: "设计城市通勤头盔", agent: "设计师", status: "progress", time: "16:00" },
-                { id: 4, title: "调研市场需求", agent: "市场调研员", status: "pending", time: "16:10" }
+                { id: 2, title: "创建任务可视化看板", agent: "产品经理", status: "done", time: "15:50" }
             ];
             render(tasks);
         }
@@ -484,19 +416,8 @@
         
         function renderColumn(id, taskList) {
             const el = document.getElementById(id);
-            if (taskList.length === 0) {
-                el.innerHTML = '<div class="empty-state">暂无任务</div>';
-                return;
-            }
-            el.innerHTML = taskList.map(t => `
-                <div class="task ${t.status}">
-                    <div class="task-title">${t.title}</div>
-                    <div class="task-meta">
-                        <span>${t.agent}</span>
-                        <span>${t.time}</span>
-                    </div>
-                </div>
-            `).join('');
+            if (taskList.length === 0) { el.innerHTML = '<div class="empty-state">暂无任务</div>'; return; }
+            el.innerHTML = taskList.map(t => '<div class="task ' + t.status + '"><div class="task-title">' + t.title + '</div><div class="task-meta"><span>' + t.agent + '</span><span>' + t.time + '</span></div></div>').join('');
         }
         
         loadTasks();
